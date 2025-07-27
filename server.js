@@ -53,27 +53,20 @@ app.post('/webhook/retell-function', async (req, res) => {
     try {
         console.log('Received function call:', JSON.stringify(req.body, null, 2));
 
-        const { function_call } = req.body;
+        const data = req.body;
 
-        if (!function_call || !function_call.name) {
+        if (!data) {
             return res.status(400).json({
                 success: false,
-                error: 'Invalid request: function_call is required'
+                error: 'Invalid request: data is required'
             });
         }
 
-        if (function_call.name === 'book_calcom_appointment_custom') {
-            const result = await bookCalcomAppointment(function_call.arguments);
-            res.json({
-                success: true,
-                result: result
-            });
-        } else {
-            res.status(400).json({
-                success: false,
-                error: `Unknown function: ${function_call.name}`
-            });
-        }
+        const result = await bookCalcomAppointment(data);
+        res.json({
+            success: true,
+            result: result
+        });
     } catch (error) {
         console.error('Error processing function call:', error);
         res.status(500).json({
@@ -114,7 +107,6 @@ async function bookCalcomAppointment(params) {
             bookingData,
             {
                 headers: {
-                    'Authorization': `Bearer ${CALCOM_API_KEY}`,
                     'Content-Type': 'application/json',
                     'cal-api-version': process.env.CALCOM_API_VERSION || '2024-08-13'
                 },
