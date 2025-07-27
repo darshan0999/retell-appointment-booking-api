@@ -83,8 +83,18 @@ async function bookCalcomAppointment(params) {
     // Validate required parameters
     const { start, name, phone } = params;
     
-    if (!start || !name || !phone) {
-        throw new Error('Missing required parameters: start, name, and phone are required');
+    // if (!start || !name || !phone) {
+    //     throw new Error('Missing required parameters: start, name, and phone are required');
+    // }
+
+    if (!start) {
+        throw new Error('Missing required parameters: start are required');
+    }
+    if (!name) {
+        throw new Error('Missing required parameters: name are required');
+    }
+    if (!phone) {
+        throw new Error('Missing required parameters: phone are required');
     }
 
     // Prepare booking data
@@ -97,7 +107,7 @@ async function bookCalcomAppointment(params) {
             language: 'en'
         },
         eventTypeId: parseInt(process.env.CALCOM_EVENT_TYPE_ID) || 2905891,
-        eventTypeSlug: process.env.CALCOM_EVENT_TYPE_SLUG || 'advanced'
+        eventTypeSlug: process.env.CALCOM_EVENT_TYPE_SLUG || 'setup'
     };
 
     try {
