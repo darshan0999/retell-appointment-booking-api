@@ -59,7 +59,7 @@ app.post('/webhook/retell-function', async (req, res) => {
             return res.status(400).json({
                 success: false,
                 error: 'Invalid request: data is required'
-            });
+            }); 
         }
 
         const result = await bookCalcomAppointment(data);
@@ -71,7 +71,8 @@ app.post('/webhook/retell-function', async (req, res) => {
         console.error('Error processing function call:', error);
         res.status(500).json({
             success: false,
-            error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message
+            // error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message
+            error: error.message
         });
     }
 });
@@ -127,9 +128,11 @@ async function bookCalcomAppointment(params) {
         console.error('Cal.com booking error:', error.response?.data || error.message);
         
         // Don't expose sensitive API errors in production
-        const errorMessage = process.env.NODE_ENV === 'production' 
-            ? 'Booking failed. Please try again later.'
-            : `Cal.com booking failed: ${error.response?.data?.message || error.message}`;
+        // const errorMessage = process.env.NODE_ENV === 'production' 
+        //     ? 'Booking failed. Please try again later.'
+        //     : `Cal.com booking failed: ${error.response?.data?.message || error.message}`;
+            
+        const errorMessage = `Cal.com booking failed: ${error.response?.data?.message || error.message}`;
             
         throw new Error(errorMessage);
     }
